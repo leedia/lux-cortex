@@ -19,9 +19,8 @@
       height: auto;
       min-height: 1.8em;
     }
-    .restart-btn, .reading-indicator, .scroll-prompt, .continue-btn { position: fixed; font-family: Georgia, serif; color: #333; background: none; border: none; }
+    .restart-btn, .scroll-prompt, .continue-btn { position: fixed; font-family: Georgia, serif; color: #333; background: none; border: none; }
     .restart-btn { top: 20px; left: 20px; cursor: pointer; text-decoration: underline; display: none; }
-    .reading-indicator { top: 20px; right: 20px; }
     .scroll-prompt { bottom: 60px; left: 50%; transform: translateX(-50%); font-size: 0.9em; animation: fadeInOut 3s ease-in-out infinite; }
     .continue-btn { bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #333; padding: 10px 20px; cursor: pointer; display: none; }
     @keyframes fadeInOut { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
@@ -41,73 +40,136 @@
 </head>
 <body>
   <button id="restart-btn" class="restart-btn" onclick="restartReading()">Restart Memory</button>
-  <div id="read-count" class="reading-indicator">Read: 1</div>
 
   <div class="container" id="main-container">
     <h1>Lux Cortex</h1>
-
-    <div class="paragraph" data-original='The dreams always scattered with the light.'>The dreams always scattered with the light.</div>
-    <div class="paragraph" data-original='Chell woke to find every bulb in his apartment burning—kitchen strips humming, overheads casting harsh shadows, even the small reading lamp glowing like a vigil. Behind his closed eyelids, fragments lingered: pulses of blue-white radiance, voices calling his name from somewhere beyond reach. Nothing coherent. Just the lingering taste of photons and inexplicable certainty that something important lived in those scattered moments of dreaming light.'>Chell woke to find every bulb in his apartment burning—kitchen strips humming, overheads casting harsh shadows, even the small reading lamp glowing like a vigil. Behind his closed eyelids, fragments lingered: pulses of blue-white radiance, voices calling his name from somewhere beyond reach. Nothing coherent. Just the lingering taste of photons and inexplicable certainty that something important lived in those scattered moments of dreaming light.</div>
-    <div class="paragraph" data-original='He made a note: Schedule neural checkup. Possible implant drift.'>He made a note: Schedule neural checkup. Possible implant drift.</div>
-    <div class="paragraph" data-original='By nine, he had opened Lux Cortex Designs.'>By nine, he had opened Lux Cortex Designs.</div>
-    <div class="paragraph" data-original='Unlike the seedy parlors that littered the highways, announcing themselves with flickering neon skulls, lurid promises, and ink-smeared walls, Lux Cortex set itself apart. The interior was clean lines and ambient lighting, air scented with bergamot. The photostimulation chair dominated the space like an altar—brushed titanium embedded with fiber optic arrays that could deliver light with nanometer precision.'>Unlike the seedy parlors that littered the highways, announcing themselves with flickering neon skulls, lurid promises, and ink-smeared walls, Lux Cortex set itself apart. The interior was clean lines and ambient lighting, air scented with bergamot. The photostimulation chair dominated the space like an altar—brushed titanium embedded with fiber optic arrays that could deliver light with nanometer precision.</div>
-    <div class="paragraph" data-original='Optogenetic enhancement, or as popular culture put it, brain tattoos. Using genetically modified neurons and precisely calibrated light to make recollections permanently vivid, triggered anew by every ray of light. Beautiful and irreversible.'>Optogenetic enhancement, or as popular culture put it, brain tattoos. Using genetically modified neurons and precisely calibrated light to make recollections permanently vivid, triggered anew by every ray of light. Beautiful and irreversible.</div>
-    <div class="paragraph" data-original='At ten, Emma and David arrived—newly married, glowing with the particular radiance of two people convinced their happiness was eternal. She wore a tailored white jumpsuit with silver earrings that caught the morning light; he wore a soft gray blazer and the tentative confidence of someone in love.'>At ten, Emma and David arrived—newly married, glowing with the particular radiance of two people convinced their happiness was eternal. She wore a tailored white jumpsuit with silver earrings that caught the morning light; he wore a soft gray blazer and the tentative confidence of someone in love.</div>
-    <div class="paragraph" data-original='They wanted matching enhancements of their wedding day, permanent neural monuments to what they were sure would be lifelong devotion.'>They wanted matching enhancements of their wedding day, permanent neural monuments to what they were sure would be lifelong devotion.</div>
-    <div class="paragraph" data-original='"The process is completely irreversible," Chell said mildly. "Unlike a physical tattoo, imprinted memories don&rsquo;t fade or change. What you preserve today will trigger with the same intensity twenty years from now, regardless of how your feelings evolve.'>"The process is completely irreversible," Chell said mildly. "Unlike a physical tattoo, imprinted memories don't fade or change. What you preserve today will trigger with the same intensity twenty years from now, regardless of how your feelings evolve.</div>
-    <div class="paragraph" data-original='Emma squeezed David&rsquo;s hand and looked up at him with practiced adoration. "Our love will never change."'>Emma squeezed David's hand and looked up at him with practiced adoration. "Our love will never change."</div>
-    <div class="paragraph" data-original='Chell, noting everything, said nothing. David&rsquo;s other hand subtly removed hers. Chell turned to the charts laid out on his desk, neural scans of now-divorced clients, when Matthew Donovan arrived unscheduled, hollow-eyed and desperate.'>Chell, noting everything, said nothing. David's other hand subtly removed hers. Chell turned to the charts laid out on his desk, neural scans of now-divorced clients, when Matthew Donovan arrived unscheduled, hollow-eyed and desperate.</div>
-    <div class="paragraph" data-original='"Please," he said to Chell, giving no indication he noticed Emma or David there. "She won&rsquo;t go. I can&rsquo;t go on a date, can&rsquo;t look at another woman without seeing her face."'>"Please," he said to Chell, giving no indication he noticed Emma or David there. "She won't go. I can't go on a date, can't look at another woman without seeing her face."</div>
-    <div class="paragraph" data-original='Three years ago, Donovan had optogenetically enhanced a memory of his dead wife. Chell had tried to warn him but grief had taken the widower&rsquo;s innate stubbornness and hardened it like concrete.'>Three years ago, Donovan had optogenetically enhanced a memory of his dead wife. Chell had tried to warn him but grief had taken the widower's innate stubbornness and hardened it like concrete.</div>
-    <div class="paragraph" data-original='"Every sunrise brings her back with perfect clarity." His voice cracked. "My Sarah. I&rsquo;m trapped by the most beautiful memory of my life."'>"Every sunrise brings her back with perfect clarity." His voice cracked. "My Sarah. I'm trapped by the most beautiful memory of my life."</div>
-    <div class="paragraph" data-original='Emma and David exchanged uncertain glances. The glow faded from their faces as they absorbed Donovan&rsquo;s raw pain. They left without scheduling a second procedure.'>Emma and David exchanged uncertain glances. The glow faded from their faces as they absorbed Donovan's raw pain. They left without scheduling a second procedure.</div>
-    <div class="paragraph" data-original='Donovan remained focused on Chell with tears in his eyes. "I need you to try the scrambling. Please."'>Donovan remained focused on Chell with tears in his eyes. "I need you to try the scrambling. Please."</div>
-    <div class="paragraph" data-original='Chell refused, as he always did. In theory, what Donovan asked for was possible. Imprint a scrambled pattern across the hippocampus to disrupt the tattooed memory, replace meaning with static. But the risks were too severe with such a delicate subject like memory. Other practitioners had tried only for their patients to develop emotional destabilization, insanity, identity erosion. Donovan left with the same haunted expression, and Chell sat alone in the silence pondering the Hippocratic oath.'>Chell refused, as he always did. In theory, what Donovan asked for was possible. Imprint a scrambled pattern across the hippocampus to disrupt the tattooed memory, replace meaning with static. But the risks were too severe with such a delicate subject like memory. Other practitioners had tried only for their patients to develop emotional destabilization, insanity, identity erosion. Donovan left with the same haunted expression, and Chell sat alone in the silence pondering the Hippocratic oath.</div>
-    <div class="paragraph" data-original='Near closing, a woman entered the shop like smoke. Her hair was dark, almost black, and caught the ambient lighting in muted halos. Something about her presence unsettled him even before she spoke.'>Near closing, a woman entered the shop like smoke. Her hair was dark, almost black, and caught the ambient lighting in muted halos. Something about her presence unsettled him even before she spoke.</div>
-    <div class="paragraph" data-original='"I&rsquo;m interested in your services," she said, settling into the consultation chair with unusual grace.'>"I'm interested in your services," she said, settling into the consultation chair with unusual grace.</div>
-    <div class="paragraph" data-original='"What kind of memory enhancement?"'>"What kind of memory enhancement?"</div>
-    <div class="paragraph" data-original='"Actually, I&rsquo;m curious about suppression. I know that optogenetic techniques can theoretically disrupt memories rather than enhance them."'>"Actually, I'm curious about suppression. I know that optogenetic techniques can theoretically disrupt memories rather than enhance them."</div>
-    <div class="paragraph" data-original='Chell felt his pulse quicken. "That&rsquo;s… experimental. Not something I typically offer."'>Chell felt his pulse quicken. "That's… experimental. Not something I typically offer."</div>
-    <div class="paragraph" data-original='"But possible?"'>"But possible?"</div>
-    <div class="paragraph" data-original='"Theoretically. Inhibitory opsins like halorhodopsins could weaken specific pathways so that light suppresses a memory instead of recalling it. But it&rsquo;s risky, and never been approved for human subjects so I&rsquo;m afraid I can&rsquo;t help you there." He studied her face. "Why suppression rather than enhancement?"'>"Theoretically. Inhibitory opsins like halorhodopsins could weaken specific pathways so that light suppresses a memory instead of recalling it. But it's risky, and never been approved for human subjects so I'm afraid I can't help you there." He studied her face. "Why suppression rather than enhancement?"</div>
-    <div class="paragraph" data-original='"Have you ever had a memory so beautiful it became a prison? Love so powerful you could only heal by forgetting?"'>"Have you ever had a memory so beautiful it became a prison? Love so powerful you could only heal by forgetting?"</div>
-    <div class="paragraph" data-original='Her phrasing unsettled him. She asked sophisticated technical questions, displaying knowledge that suggested neuroscience background. Through it all, she wore a smile that never reached her eyes—sad, knowing, achingly familiar.'>Her phrasing unsettled him. She asked sophisticated technical questions, displaying knowledge that suggested neuroscience background. Through it all, she wore a smile that never reached her eyes—sad, knowing, achingly familiar.</div>
-    <div class="paragraph" data-original='"Could you at least try?" she asked finally.'>"Could you at least try?" she asked finally.</div>
-    <div class="paragraph" data-original='He shook his head slowly. "Even if I could, I&rsquo;d need extensive preparation. Experimental techniques require—"'>He shook his head slowly. "Even if I could, I'd need extensive preparation. Experimental techniques require—"</div>
-    <div class="paragraph" data-original='"What if someone had already done it? To themselves?" Her voice was gentle, almost clinical. "Would there be signs? Sleep disturbances, confusion upon waking, dreams full of light and voices you can&rsquo;t place?"'>"What if someone had already done it? To themselves?" Her voice was gentle, almost clinical. "Would there be signs? Sleep disturbances, confusion upon waking, dreams full of light and voices you can't place?"</div>
-    <div class="paragraph" data-original='The question hit him like a physical blow. His vision tunneled, the room suddenly too bright.'>The question hit him like a physical blow. His vision tunneled, the room suddenly too bright.</div>
-    <div class="paragraph" data-original='"Why are you asking me this?"'>"Why are you asking me this?"</div>
-    <div class="paragraph" data-original='She regarded him quietly, and he had the strangest sensation she was seeing him more clearly than he saw himself. "Because I think you already know the answer."'>She regarded him quietly, and he had the strangest sensation she was seeing him more clearly than he saw himself. "Because I think you already know the answer."</div>
-    <div class="paragraph" data-original='She left without another word, and Chell stood alone surrounded by technology he&rsquo;d mastered through years of study, suddenly feeling like a stranger in his own life.'>She left without another word, and Chell stood alone surrounded by technology he'd mastered through years of study, suddenly feeling like a stranger in his own life.</div>
-    <div class="paragraph" data-original='That night, he sat gingerly at the edge of his bedspread and turned off the lights, one by one, until he sat in darkness for the first time in months.'>That night, he sat gingerly at the edge of his bedspread and turned off the lights, one by one, until he sat in darkness for the first time in months.</div>
-    <div class="paragraph" data-original='Behind his closed eyelids, fragments sharpened into clarity. A woman&rsquo;s voice, soft and familiar. The soft brush of someone else&rsquo;s hand. A profound loss from somewhere deeper than conscious memory.'>Behind his closed eyelids, fragments sharpened into clarity. A woman's voice, soft and familiar. The soft brush of someone else's hand. A profound loss from somewhere deeper than conscious memory.</div>
-    <div class="paragraph elena-sentence" data-original='And then, rising like bubbles through still water, a single word spoken with infinite tenderness: Elena.'>And then, rising like bubbles through still water, a single word spoken with infinite tenderness: Elena.</div>
-    <div class="paragraph" data-original='He woke in sunlight, tears streaming down his face.'>He woke in sunlight, tears streaming down his face.</div>
-    <div class="paragraph" data-original='Chell wiped his eyes and made a note to check his implants. Turning on the light by his bed, he prepared for another day at Lux Cortex Designs. Some people, he reflected, simply weren&rsquo;t built for the intensity of perfect recollection. Better to rely on the gentle fade of natural memory than risk the kind of devastating clarity that had destroyed clients like Matthew Donovan.'>Chell wiped his eyes and made a note to check his implants. Turning on the light by his bed, he prepared for another day at Lux Cortex Designs. Some people, he reflected, simply weren't built for the intensity of perfect recollection. Better to rely on the gentle fade of natural memory than risk the kind of devastating clarity that had destroyed clients like Matthew Donovan.</div>
-    <div class="paragraph" data-original='How fortunate, he thought, that he&rsquo;d had the wisdom never to enhance a memory of his own.'>How fortunate, he thought, that he'd had the wisdom never to enhance a memory of his own.</div>
+    <div id="story-content"></div>
   </div>
 
-  <div id="scroll-prompt" class="scroll-prompt">Scroll to continue reading…</div>
+
   <button id="continue-btn" class="continue-btn" onclick="continueReading()">Continue Reading</button>
 
   <script>
-    let readCount = 1, ready = false;
-    const properNouns = ['Chell','Lux Cortex Designs','Emma','David','Matthew Donovan','Sarah','Elena'];
-    const emotionalWords = ['love','beautiful','happiness','memory','dreams','tears','familiar','loss','heart','smile','sad','profound','darkness','light','fragments'];
+    // EDIT YOUR STORY HERE - Just replace the text between the backticks
+    const storyText = `The dreams always scattered with the light.
 
-    function updateCount() { document.getElementById('read-count').textContent = 'Read: ' + readCount; }
+Chell woke to find every bulb in his apartment burning—kitchen strips humming, overheads casting harsh shadows, even the small reading lamp glowing like a vigil. Behind his closed eyelids, fragments lingered: pulses of blue-white radiance, voices calling his name from somewhere beyond reach. Nothing coherent. Just the lingering taste of photons and inexplicable certainty that something important lived in those scattered moments of dreaming light.
+
+He made a note: Schedule neural checkup. Possible implant drift.
+
+By nine, he had opened Lux Cortex Designs.
+
+Unlike the seedy parlors that littered the highways, announcing themselves with flickering neon skulls, lurid promises, and ink-smeared walls, Lux Cortex set itself apart. The interior was clean lines and ambient lighting, air scented with bergamot. The photostimulation chair dominated the space like an altar—brushed titanium embedded with fiber optic arrays that could deliver light with nanometer precision.
+
+Optogenetic enhancement, or as popular culture put it, brain tattoos. Using genetically modified neurons and precisely calibrated light to make recollections permanently vivid, triggered anew by every ray of light. Beautiful and irreversible.
+
+At ten, Emma and David arrived—newly married, glowing with the particular radiance of two people convinced their happiness was eternal. She wore a tailored white jumpsuit with silver earrings that caught the morning light; he wore a soft gray blazer and the tentative confidence of someone in love.
+
+They wanted matching enhancements of their wedding day, permanent neural monuments to what they were sure would be lifelong devotion.
+
+"The process is completely irreversible," Chell said mildly. "Unlike a physical tattoo, imprinted memories don't fade or change. What you preserve today will trigger with the same intensity twenty years from now, regardless of how your feelings evolve.
+
+Emma squeezed David's hand and looked up at him with practiced adoration. "Our love will never change."
+
+Chell, noting everything, said nothing. David's other hand subtly removed hers. Chell turned to the charts laid out on his desk, neural scans of now-divorced clients, when Matthew Donovan arrived unscheduled, hollow-eyed and desperate.
+
+"Please," he said to Chell, giving no indication he noticed Emma or David there. "She won't go. I can't go on a date, can't look at another woman without seeing her face."
+
+Three years ago, Donovan had optogenetically enhanced a memory of his dead wife. Chell had tried to warn him but grief had taken the widower's innate stubbornness and hardened it like concrete.
+
+"Every sunrise brings her back with perfect clarity." His voice cracked. "My Sarah. I'm trapped by the most beautiful memory of my life."
+
+Emma and David exchanged uncertain glances. The glow faded from their faces as they absorbed Donovan's raw pain. They left without scheduling a second procedure.
+
+Donovan remained focused on Chell with tears in his eyes. "I need you to try the scrambling. Please."
+
+Chell refused, as he always did. In theory, what Donovan asked for was possible. Imprint a scrambled pattern across the hippocampus to disrupt the tattooed memory, replace meaning with static. But the risks were too severe with such a delicate subject like memory. Other practitioners had tried only for their patients to develop emotional destabilization, insanity, identity erosion. Donovan left with the same haunted expression, and Chell sat alone in the silence pondering the Hippocratic oath.
+
+Near closing, a woman entered the shop like smoke. Her hair was dark, almost black, and caught the ambient lighting in muted halos. Something about her presence unsettled him even before she spoke.
+
+"I'm interested in your services," she said, settling into the consultation chair with unusual grace.
+
+"What kind of memory enhancement?"
+
+"Actually, I'm curious about suppression. I know that optogenetic techniques can theoretically disrupt memories rather than enhance them."
+
+Chell felt his pulse quicken. "That's… experimental. Not something I typically offer."
+
+"But possible?"
+
+"Theoretically. Inhibitory opsins like halorhodopsins could weaken specific pathways so that light suppresses a memory instead of recalling it. But it's risky, and never been approved for human subjects so I'm afraid I can't help you there." He studied her face. "Why suppression rather than enhancement?"
+
+"Have you ever had a memory so beautiful it became a prison? Love so powerful you could only heal by forgetting?"
+
+Her phrasing unsettled him. She asked sophisticated technical questions, displaying knowledge that suggested neuroscience background. Through it all, she wore a smile that never reached her eyes—sad, knowing, achingly familiar.
+
+"Could you at least try?" she asked finally.
+
+He shook his head slowly. "Even if I could, I'd need extensive preparation. Experimental techniques require—"
+
+"What if someone had already done it? To themselves?" Her voice was gentle, almost clinical. "Would there be signs? Sleep disturbances, confusion upon waking, dreams full of light and voices you can't place?"
+
+The question hit him like a physical blow. His vision tunneled, the room suddenly too bright.
+
+"Why are you asking me this?"
+
+She regarded him quietly, and he had the strangest sensation she was seeing him more clearly than he saw himself. "Because I think you already know the answer."
+
+She left without another word, and Chell stood alone surrounded by technology he'd mastered through years of study, suddenly feeling like a stranger in his own life.
+
+That night, he sat gingerly at the edge of his bedspread and turned off the lights, one by one, until he sat in darkness for the first time in months.
+
+Behind his closed eyelids, fragments sharpened into clarity. A woman's voice, soft and familiar. The soft brush of someone else's hand. A profound loss from somewhere deeper than conscious memory.
+
+[ELENA]And then, rising like bubbles through still water, a single word spoken with infinite tenderness: Elena.[/ELENA]
+
+He woke in sunlight, tears streaming down his face.
+
+Chell wiped his eyes and made a note to check his implants. Turning on the light by his bed, he prepared for another day at Lux Cortex Designs. Some people, he reflected, simply weren't built for the intensity of perfect recollection. Better to rely on the gentle fade of natural memory than risk the kind of devastating clarity that had destroyed clients like Matthew Donovan.
+
+How fortunate, he thought, that he'd had the wisdom never to enhance a memory of his own.`;
+
+    // Parse the story and create paragraphs
+    function initializeStory() {
+      const container = document.getElementById('story-content');
+      const paragraphs = storyText.trim().split('\n\n');
+      
+      paragraphs.forEach(para => {
+        const div = document.createElement('div');
+        div.className = 'paragraph';
+        
+        // Check if this paragraph contains the special Elena marker
+        if (para.includes('[ELENA]')) {
+          div.classList.add('elena-sentence');
+          // Remove the markers for display
+          para = para.replace('[ELENA]', '').replace('[/ELENA]', '');
+        }
+        
+        div.textContent = para;
+        div.setAttribute('data-original', para);
+        container.appendChild(div);
+      });
+    }
+
+    // Rest of your JavaScript remains the same
+    let readCount = 1, ready = false;
+    let stageExecuted = {2: false, 3: false, 4: false};
+    const properNouns = ['Chell','Lux Cortex Designs','Emma','David','Matthew Donovan','Sarah','Elena','Donovan'];
+    const emotionalWords = ['love','beautiful','happiness','memory','dreams','tears','familiar','loss','heart','smile','sad','profound','darkness','light','fragments','certainty','important','devotion','memories','intensity','feelings','adoration','desperate','grief','clarity','glow','pain','sensation','tenderness','intensity'];
+
     function restartReading() { window.location.reload(); }
 
     window.addEventListener('scroll', () => {
       const pos = window.scrollY;
       const bottom = document.documentElement.scrollHeight - window.innerHeight;
       if (!ready && pos >= bottom - 5) {
-        document.getElementById('continue-btn').style.display = 'block';
+        if (readCount < 4) {
+          document.getElementById('continue-btn').style.display = 'block';
+        }
         ready = true;
       }
-      if (ready && pos < 50) {
+      if (ready && pos < 50 && !stageExecuted[readCount]) {
         document.getElementById('continue-btn').style.display = 'none';
-        document.getElementById('scroll-prompt').style.display = 'none';
         runStage();
         ready = false;
       }
@@ -115,21 +177,28 @@
 
     function continueReading() {
       readCount++;
-      updateCount();
-      document.getElementById('scroll-prompt').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function runStage() {
-      if (readCount === 2) redaction();
-      else if (readCount === 3) fadeWords();
-      else if (readCount === 4) scatterByParagraph();
+      if (readCount === 2 && !stageExecuted[2]) {
+        stageExecuted[2] = true;
+        redaction();
+      }
+      else if (readCount === 3 && !stageExecuted[3]) {
+        stageExecuted[3] = true;
+        fadeWords();
+      }
+      else if (readCount === 4 && !stageExecuted[4]) {
+        stageExecuted[4] = true;
+        scatterByParagraph();
+      }
     }
 
     function redaction() {
       document.querySelectorAll('.paragraph').forEach((p, i) => {
         setTimeout(() => {
-          let html = p.dataset.original;
+          let html = p.getAttribute('data-original');
           properNouns.forEach(n => {
             html = html.replace(new RegExp(`\\b${n}\\b`, 'g'), `<span class="redacting">${n}</span>`);
           });
@@ -153,10 +222,8 @@
     }
 
     function scatterByParagraph() {
-      // First, clear all previous animations
       clearPreviousAnimations();
       
-      // Then start the scatter effect after a delay
       setTimeout(() => {
         document.querySelectorAll('.paragraph').forEach(p => {
           const obs = new IntersectionObserver((entries, o) => {
@@ -173,22 +240,19 @@
     }
     
     function clearPreviousAnimations() {
-      // Clear redactions
       document.querySelectorAll('.redacting').forEach(el => {
         el.classList.remove('redacted');
         el.classList.add('clearing');
       });
       
-      // Clear faded words
       document.querySelectorAll('.word-fade').forEach(el => {
         el.classList.remove('fading');
         el.classList.add('clearing');
       });
       
-      // After clearing animations, restore original text
       setTimeout(() => {
         document.querySelectorAll('.paragraph').forEach(p => {
-          p.innerHTML = p.dataset.original;
+          p.innerHTML = p.getAttribute('data-original');
         });
       }, 1500);
     }
@@ -197,7 +261,6 @@
       const text = p.textContent;
       const isElenaParagraph = p.classList.contains('elena-sentence');
       
-      // Preserve the paragraph's current dimensions to prevent layout shift
       const rect = p.getBoundingClientRect();
       p.style.height = rect.height + 'px';
       p.style.width = rect.width + 'px';
@@ -205,13 +268,11 @@
       
       p.innerHTML = '';
       
-      // For the Elena paragraph, we need to handle it specially
       if (isElenaParagraph) {
         const beforeElena = 'And then, rising like bubbles through still water, a single word spoken with infinite tenderness: ';
         const elenaWord = 'Elena';
         const afterElena = '.';
         
-        // Create spans for the text before Elena
         beforeElena.split('').forEach((c, i) => {
           const span = document.createElement('span');
           span.textContent = c;
@@ -227,13 +288,11 @@
           }, i * 40);
         });
         
-        // Create Elena as a special non-scattering element
         const elenaSpan = document.createElement('span');
         elenaSpan.textContent = elenaWord;
         elenaSpan.className = 'elena-word';
         p.appendChild(elenaSpan);
         
-        // Create the period after Elena
         const periodSpan = document.createElement('span');
         periodSpan.textContent = afterElena;
         periodSpan.className = 'scatter-char';
@@ -243,13 +302,11 @@
           periodSpan.classList.add('scattering');
         }, (beforeElena.length + 1) * 40);
         
-        // Show restart button after the scatter completes
         setTimeout(() => {
           document.getElementById('restart-btn').style.display = 'block';
         }, beforeElena.length * 40 + 4000);
         
       } else {
-        // Normal paragraph scattering
         text.split('').forEach((c, i) => {
           const span = document.createElement('span');
           span.textContent = c;
@@ -267,7 +324,8 @@
       }
     }
 
-    updateCount();
+    // Initialize the story when the page loads
+    window.addEventListener('DOMContentLoaded', initializeStory);
   </script>
 </body>
 </html>
