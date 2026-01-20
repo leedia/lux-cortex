@@ -11,125 +11,217 @@
     .paragraph { 
       margin-bottom: 1.5em; 
       font-size: 1.1em; 
-      transition: opacity 0.5s ease; 
-      white-space: pre-wrap; 
       position: relative;
     }
-    .paragraph.scattering-active {
-      height: auto;
-      min-height: 1.8em;
+    /* Words don't break across lines */
+    .word { display: inline-block; white-space: nowrap; }
+    .word.italic, .char.italic { font-style: italic; }
+    .char { display: inline-block; white-space: pre; color: inherit; }
+    .char.scattering { 
+      transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1); 
     }
-    .restart-btn, .scroll-prompt, .continue-btn { position: fixed; font-family: Georgia, serif; color: #333; background: none; border: none; }
+    .char.scatter-residue {
+      transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .restart-btn, .continue-btn { position: fixed; font-family: Georgia, serif; color: #333; background: none; border: none; }
     .restart-btn { top: 20px; left: 20px; cursor: pointer; text-decoration: underline; display: none; }
-    .scroll-prompt { bottom: 60px; left: 50%; transform: translateX(-50%); font-size: 0.9em; animation: fadeInOut 3s ease-in-out infinite; }
     .continue-btn { bottom: 30px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #333; padding: 10px 20px; cursor: pointer; display: none; }
-    @keyframes fadeInOut { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
-    .redacting { position: relative; display: inline-block; transition: all 1.5s ease; }
-    .redacting::after { content: ''; position: absolute; left: 0; top: 0; width: 0; height: 100%; background: black; transition: width 1.5s ease; }
-    .redacting.redacted::after { width: 100%; }
-    .redacting.redacted { color: transparent; }
-    .redacting.clearing::after { width: 0; opacity: 0; }
-    .redacting.clearing { color: black; }
-    .word-fade { display: inline-block; transition: all 2s ease; }
-    .word-fade.fading { opacity: 0.2; filter: blur(1px); }
-    .word-fade.clearing { opacity: 1; filter: blur(0); }
-    .scatter-char { display: inline-block; transition: all 4s cubic-bezier(0.4, 0, 0.2, 1); white-space: pre; }
-    .scatter-char.scattering { opacity: 0; }
-    .elena-word { display: inline-block; font-style: italic; }
+    
+    /* Redaction */
+    .proper-noun { 
+      position: relative; 
+      display: inline-block;
+    }
+    .proper-noun::after { 
+      content: ''; 
+      position: absolute; 
+      left: 0; 
+      top: 0; 
+      width: 0; 
+      height: 100%; 
+      background: black; 
+      transition: width 2.5s ease;
+      pointer-events: none;
+    }
+    .proper-noun .char {
+      color: black;
+      transition: color 2.5s ease;
+    }
+    .proper-noun.redacted .char { 
+      color: transparent; 
+    }
+    .proper-noun.redacted::after { 
+      width: 100%; 
+    }
+    /* Elena word redaction (no .char children) */
+    .elena-word.proper-noun {
+      transition: color 2.5s ease;
+    }
+    .elena-word.proper-noun.redacted {
+      color: transparent;
+    }
+    /* Hide redaction boxes instantly in scatter stage */
+    .stage-scatter .proper-noun::after {
+      opacity: 0 !important;
+      transition: opacity 0.4s ease !important;
+    }
+    .stage-scatter .proper-noun .char {
+      color: black !important;
+      transition: color 0.4s ease !important;
+    }
+    .stage-scatter .elena-word.proper-noun {
+      color: black !important;
+      transition: color 0.4s ease !important;
+    }
+    /* Reset faded text only until scatter starts */
+    .stage-scatter .emotional .char:not(.scattering):not(.scatter-residue) {
+      filter: none !important;
+      opacity: 1;
+      transition: filter 0.4s ease, opacity 0.4s ease;
+    }
+    .stage-scatter .char.scattering,
+    .stage-scatter .char.scatter-residue {
+      transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    /* Word fade */
+    .emotional { display: inline-block; }
+    .emotional .char { 
+      opacity: 1;
+      filter: blur(0);
+      transition: opacity 3s ease, filter 3s ease; 
+    }
+    .emotional.fading .char { 
+      opacity: 0.2; 
+      filter: blur(1px); 
+    }
+    
+    /* Elena special - emerges with subtle glow */
+    .elena-word { 
+      display: inline-block; 
+      font-style: italic;
+      transition: all 2s ease;
+    }
+    .elena-word.revealed {
+      text-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
-  <button id="restart-btn" class="restart-btn" onclick="restartReading()">Restart Memory</button>
+  <button id="restart-btn" class="restart-btn" onclick="window.scrollTo({top:0});location.reload()">Restart Memory</button>
 
   <div class="container" id="main-container">
     <h1>Lux Cortex</h1>
     <div id="story-content"></div>
   </div>
 
-
-  <button id="continue-btn" class="continue-btn" onclick="continueReading()">Continue Reading</button>
+  <button id="continue-btn" class="continue-btn">Continue Reading</button>
 
   <script>
-    // EDIT YOUR STORY HERE - Just replace the text between the backticks
     const storyText = `The dreams always scattered with the light.
 
-Chell woke to find every bulb in his apartment burning—kitchen strips humming, overheads casting harsh shadows, even the small reading lamp glowing like a vigil. Behind his closed eyelids, fragments lingered: pulses of blue-white radiance, voices calling his name from somewhere beyond reach. Nothing coherent. Just the lingering taste of photons and inexplicable certainty that something important lived in those scattered moments of dreaming light.
+Chell woke to find every bulb in his apartment still burning—kitchen strips humming their thin fluorescent song, overhead fixtures casting geometric shadows across the ceiling, even the small reading lamp beside his bed glowing like a vigil. He lay there for a moment, trying to hold onto the fragments that dissolved behind his eyelids: pulses of blue-white radiance, voices calling his name from somewhere beyond the edge of waking. Nothing coherent. Just the lingering taste of photons and the inexplicable certainty that something important lived in those scattered moments of dreaming light.
 
-He made a note: Schedule neural checkup. Possible implant drift.
+He sat up, rubbed his face with both hands, and made a note on the tablet beside his bed: [ITALIC]Schedule neural checkup. Possible implant drift.[/ITALIC]
 
-By nine, he had opened Lux Cortex Designs.
+By nine, he had showered, dressed in his usual charcoal slacks and crisp white shirt, and opened Lux Cortex Designs for business.
 
-Unlike the seedy parlors that littered the highways, announcing themselves with flickering neon skulls, lurid promises, and ink-smeared walls, Lux Cortex set itself apart. The interior was clean lines and ambient lighting, air scented with bergamot. The photostimulation chair dominated the space like an altar—brushed titanium embedded with fiber optic arrays that could deliver light with nanometer precision.
+His shop occupied the ground floor of a converted brownstone in the arts district, its facade deliberately understated with brushed steel signage, frosted glass, none of the garish displays that characterized the seedy parlors that littered the highways with their flickering neon skulls and lurid promises. Those places, with their ink-smeared walls and technicians who doubled as dermal mods, had given the entire industry a reputation for recklessness. Chell had built something different. The interior of Lux Cortex was all clean lines and ambient lighting, the air carrying subtle notes of bergamot from a diffuser placed out of sight. Clients often remarked that it felt more like a high-end spa than a neural modification clinic, which was precisely the point.
 
-Optogenetic enhancement, or as popular culture put it, brain tattoos. Using genetically modified neurons and precisely calibrated light to make recollections permanently vivid, triggered anew by every ray of light. Beautiful and irreversible.
+The photostimulation chair dominated the main procedure room like an altar awaiting its supplicant, an apt analogy. Its brushed titanium frame was embedded with fiber optic arrays so fine they were nearly invisible, each one capable of delivering light with nanometer precision to genetically modified neurons that had been primed to receive it. Optogenetic enhancement, or as popular culture put it, brain tattoos. Chell found the term reductive. What he offered was permanence: using light-sensitive proteins engineered into selected neural pathways to make specific recollections permanently vivid, triggered anew by every ray of light that touched the enhanced tissue. A wedding day preserved in perfect clarity. A child's first steps. The face of someone you never wanted to forget.
 
-At ten, Emma and David arrived—newly married, glowing with the particular radiance of two people convinced their happiness was eternal. She wore a tailored white jumpsuit with silver earrings that caught the morning light; he wore a soft gray blazer and the tentative confidence of someone in love.
+Beautiful. And completely irreversible.
 
-They wanted matching enhancements of their wedding day, permanent neural monuments to what they were sure would be lifelong devotion.
+His first clients of the day arrived precisely at ten: Emma and David Ashford, newly wed, still wrapped in the particular luminescence of two people convinced their happiness was a permanent condition. Emma wore a tailored white jumpsuit with silver earrings that caught the morning light; she moved through the reception area with careful grace. David followed half a step behind in a soft gray blazer, his hand hovering at the small of her back without quite touching.
 
-"The process is completely irreversible," Chell said mildly. "Unlike a physical tattoo, imprinted memories don't fade or change. What you preserve today will trigger with the same intensity twenty years from now, regardless of how your feelings evolve.
+They wanted matching enhancements of their wedding ceremony—the moment they had exchanged vows, preserved so that every sunrise for the rest of their lives would bring flooding back the same crystalline intensity they felt now.
 
-Emma squeezed David's hand and looked up at him with practiced adoration. "Our love will never change."
+"The process is completely irreversible," Chell said, settling into the consultation chair across from them. He kept his voice mild, clinical, the same way he always did during this part of the appointment. "Unlike a physical tattoo, which fades and can eventually be removed with laser treatments, imprinted memories don't change. What you preserve today will trigger with exactly the same emotional intensity twenty years from now, forty years from now, regardless of how your feelings evolve."
 
-Chell, noting everything, said nothing. David's other hand subtly removed hers. Chell turned to the charts laid out on his desk, neural scans of now-divorced clients, when Matthew Donovan arrived unscheduled, hollow-eyed and desperate.
+Emma reached over and squeezed David's hand, turning her face to him with an expression of practiced adoration. "Our love will never change," she said, and the words carried the absolute conviction of someone who had never yet been proven wrong about anything important.
 
-"Please," he said to Chell, giving no indication he noticed Emma or David there. "She won't go. I can't go on a date, can't look at another woman without seeing her face."
+Chell noted the way David's other hand twitched almost imperceptibly and said nothing. He turned instead to the neural imaging charts spread across his desk, anonymized scans from previous clients: a woman whose enhanced memory of her first husband now overlaid every moment with her second, a man who couldn't look at a sunrise without weeping for a daughter who had stopped speaking to him years ago. He had begun showing these to clients as part of the consultation process, though most of them glanced at the colorful brain maps without really seeing them, the way people looked at warning labels on cigarette packs.
 
-Three years ago, Donovan had optogenetically enhanced a memory of his dead wife. Chell had tried to warn him but grief had taken the widower's innate stubbornness and hardened it like concrete.
+He was about to begin his standard explanation when the door chime sounded and Matthew Donovan walked in.
 
-"Every sunrise brings her back with perfect clarity." His voice cracked. "My Sarah. I'm trapped by the most beautiful memory of my life."
+Chell recognized him immediately, though the man had aged a decade in the three years since they'd last met. His face had the hollowed-out quality of someone who had stopped sleeping, stopped eating, stopped doing anything except enduring. He wore a rumpled coat that had once been expensive and shoes that hadn't been polished in months, and he walked directly toward Chell without acknowledging Emma and David's presence.
 
-Emma and David exchanged uncertain glances. The glow faded from their faces as they absorbed Donovan's raw pain. They left without scheduling a second procedure.
+"Please," he said, and his voice cracked on the single syllable. "She won't go. I can't—I can't go on a date, can't look at another woman or close my eyes without seeing her face. Every streetlight. Every camera flash. She's there, always perfect."
 
-Donovan remained focused on Chell with tears in his eyes. "I need you to try the scrambling. Please."
+Three years ago, Matthew Donovan had come to Lux Cortex desperate to preserve his final memory of his late wife. He wanted to hold onto her, he had said. He never wanted to forget her face or that last precious afternoon they had spent together in their garden. Chell had tried to warn him. He had shown him the same charts he showed everyone, had explained in careful detail what it meant to make a fleeting moment permanent. But grief had taken Donovan's natural stubbornness and hardened it beyond reason. He had signed the waivers. He had climbed into the chair.
 
-Chell refused, as he always did. In theory, what Donovan asked for was possible. Imprint a scrambled pattern across the hippocampus to disrupt the tattooed memory, replace meaning with static. But the risks were too severe with such a delicate subject like memory. Other practitioners had tried only for their patients to develop emotional destabilization, insanity, identity erosion. Donovan left with the same haunted expression, and Chell sat alone in the silence pondering the Hippocratic oath.
+"Every sunrise brings her back with perfect clarity," Donovan said now, tears streaming openly down his face. "My Sarah. I'm trapped by the most beautiful memory of my life."
 
-Near closing, a woman entered the shop like smoke. Her hair was dark, almost black, and caught the ambient lighting in muted halos. Something about her presence unsettled him even before she spoke.
+Behind him, Emma and David exchanged uncertain glances. The warm glow that had surrounded them when they entered the office was fading now, replaced by something more complex as they absorbed the raw anguish in Donovan's voice.
 
-"I'm interested in your services," she said, settling into the consultation chair with unusual grace.
+Donovan remained focused, his expression wrecked. "I need you to try the scrambling. Please."
 
-"What kind of memory enhancement?"
+Chell refused, as he always did when a client made this request. In theory, what the man was asking for was possible. Imprint a scrambled pattern of neural interference across the hippocampus to disrupt the enhancement, replace the preserved memory's clarity with static, dissolve the pathway so that light no longer triggered anything coherent. But the procedure was experimental and the risks were too severe with such a delicate subject like memory. Other practitioners who had attempted it reported catastrophic results: emotional destabilization so severe their patients could no longer recognize their own families or themselves. More often than not, the scrambling didn't erase memories so much as shatter them.
 
-"Actually, I'm curious about suppression. I know that optogenetic techniques can theoretically disrupt memories rather than enhance them."
+"I'm sorry," Chell said.
 
-Chell felt his pulse quicken. "That's… experimental. Not something I typically offer."
+Donovan stood there for a long moment, shoulders heaving, and then turned and walked back out through the door without another word. The chime sounded again, bright and cheerful.
+
+In the silence that followed, Emma and David exchanged another look. They left without setting another appointment, and Chell suspected they never would. He sat alone in the consultation room for a long time afterward, thinking about the Hippocratic oath and what it meant to do no harm in a profession built on making irreversible changes to the architecture of human memory.
+
+Near closing time, when the shadows in the procedure room had grown long, a woman entered the shop like smoke. Her hair was dark—not quite black, but close, with undertones of deep brown that caught the ambient lighting in muted halos. She moved with an unusual grace, something almost liquid in the way she settled into the consultation chair, and Chell felt a strange disquiet stir in his chest before she even spoke.
+
+"I'm interested in your services," she said. Her voice was low and measured, with the careful enunciation of a singer.
+
+"What kind of memory enhancement can I help you with?" Chell asked, reaching for his intake tablet.
+
+"Actually, I'm curious about suppression." She watched his face as she said it, her eyes dark and attentive. "I understand that optogenetic techniques can theoretically disrupt memories rather than enhance them. Weaken specific pathways so that light suppresses a memory instead of recalling it."
+
+Chell felt his pulse quicken. "That's experimental," he said. "Not something I typically offer."
 
 "But possible?"
 
-"Theoretically. Inhibitory opsins like halorhodopsins could weaken specific pathways so that light suppresses a memory instead of recalling it. But it's risky, and never been approved for human subjects so I'm afraid I can't help you there." He studied her face. "Why suppression rather than enhancement?"
+"Theoretically. Inhibitory opsins like halorhodopsins could be engineered into targeted pathways, creating a system where light exposure dampens neural activity rather than amplifying it. In principle, you could design an enhancement that would suppress a memory rather than sharpen it. But the research is preliminary and it's never been approved for human subjects, so I'm afraid I can't help you there." He paused, studying her face. "Most people who come here want to hold onto something, not let it go."
 
-"Have you ever had a memory so beautiful it became a prison? Love so powerful you could only heal by forgetting?"
+She was quiet for a moment, and when she spoke again, her voice carried a weight that seemed to press against the air between them. "Have you ever had a memory so beautiful it became a prison? Love so powerful you could only heal by forgetting?"
 
-Her phrasing unsettled him. She asked sophisticated technical questions, displaying knowledge that suggested neuroscience background. Through it all, she wore a smile that never reached her eyes—sad, knowing, achingly familiar.
+Her phrasing unsettled him. She asked with a technical precision that suggested a background in neuroscience or at least significant sophistication into the field. Through it all, she wore a smile that never quite reached her eyes—sad and knowing and achingly familiar.
 
-"Could you at least try?" she asked finally.
+"Could you at least try?" she asked finally. "If someone came to you desperate enough, would you consider attempting it?"
 
-He shook his head slowly. "Even if I could, I'd need extensive preparation. Experimental techniques require—"
+He shook his head slowly. "Even if I were willing, I'd need extensive preparation. Experimental techniques require—"
 
-"What if someone had already done it? To themselves?" Her voice was gentle, almost clinical. "Would there be signs? Sleep disturbances, confusion upon waking, dreams full of light and voices you can't place?"
+"What if someone had already done it? To themselves?" Her voice was gentle. "Would there be signs?"
 
-The question hit him like a physical blow. His vision tunneled, the room suddenly too bright.
+The room suddenly felt too bright.
 
 "Why are you asking me this?"
 
-She regarded him quietly, and he had the strangest sensation she was seeing him more clearly than he saw himself. "Because I think you already know the answer."
+The woman regarded him quietly, and he had the strangest sensation she was seeing him more intimately than he saw himself. She rose from the chair then, smooth and graceful, and walked toward the door. The chime pealed once—and then she was gone, leaving Chell standing alone in the fading afternoon light, surrounded by technology he had mastered through years of study, suddenly feeling like a stranger in his own life.
 
-She left without another word, and Chell stood alone surrounded by technology he'd mastered through years of study, suddenly feeling like a stranger in his own life.
+That night, for the first time in months, Chell turned off the lights.
 
-That night, he sat gingerly at the edge of his bedspread and turned off the lights, one by one, until he sat in darkness for the first time in months.
+He sat at the edge of his bed in his apartment above the shop, reaching one by one for the switches: the overhead, the bathroom light leaking under the door, the small reading lamp that had glowed beside him every night for as long as he could remember. Darkness leaked in around him and he sat with it, waiting for something he couldn't name.
 
-Behind his closed eyelids, fragments sharpened into clarity. A woman's voice, soft and familiar. The soft brush of someone else's hand. A profound loss from somewhere deeper than conscious memory.
+When he closed his eyes, the fragments were waiting.
 
-[ELENA]And then, rising like bubbles through still water, a single word spoken with infinite tenderness: Elena.[/ELENA]
+They came sharper now, more coherent than they had ever been in the bright mornings when he woke gasping from dreams he couldn't remember. A woman's voice, soft and familiar. The brush of fingertips against his cheek. A profound loss rising from somewhere deeper than conscious memory, a grief so vast it seemed to have been carved into the very bedrock of his being.
+
+[ELENA]And then, rising through the darkness like a bubble through still water, a single word, spoken with infinite tenderness: Elena.[/ELENA]
 
 He woke in sunlight, tears streaming down his face.
 
-Chell wiped his eyes and made a note to check his implants. Turning on the light by his bed, he prepared for another day at Lux Cortex Designs. Some people, he reflected, simply weren't built for the intensity of perfect recollection. Better to rely on the gentle fade of natural memory than risk the kind of devastating clarity that had destroyed clients like Matthew Donovan.
+Chell wiped his eyes with the back of his hand and reached for the tablet on his bedside table. [ITALIC]Schedule neural checkup[/ITALIC], he wrote, his handwriting unsteady. [ITALIC]Possible implant drift[/ITALIC].
 
-How fortunate, he thought, that he'd had the wisdom never to enhance a memory of his own.`;
+He turned on the light beside his bed, and the warm glow filled the room, pushing back the shadows and restoring the familiar geometry of his life.
 
-    // Parse the story and create paragraphs
+Some people, he reflected, simply weren't built for the intensity of permanent recollection. He had witnessed it again and again: the grief that reopened every morning, the love that curdled into resentment because it could never evolve, the joy that calcified into obligation. Better, surely, to rely on the gentle fade of natural memory than to risk the devastating clarity that had destroyed clients like Matthew Donovan.
+
+How fortunate, he thought, that he had always had the wisdom never to enhance a memory of his own.`;
+
+    const properNouns = ['Chell','Lux Cortex Designs','Lux Cortex','Emma','David','Matthew Donovan','Sarah','Elena','Donovan','Ashford'];
+    const emotionalWords = ['love','beautiful','happiness','memory','dreams','tears','familiar','loss','heart','smile','sad','profound','darkness','light','fragments','certainty','important','devotion','memories','intensity','feelings','adoration','desperate','grief','clarity','glow','pain','sensation','tenderness','anguish','wrecked','conviction','disquiet','unsettled','permanent','recollection','permanently','clarity','intensity','disquiet','knowing','intimately','stranger','painful','permanent'];
+
+    let readCount = 1;
+    let ready = false;
+    let stageExecuted = {2: false, 3: false, 4: false};
+
+    // Build the story with all spans from the start
     function initializeStory() {
       const container = document.getElementById('story-content');
       const paragraphs = storyText.trim().split('\n\n');
@@ -138,47 +230,210 @@ How fortunate, he thought, that he'd had the wisdom never to enhance a memory of
         const div = document.createElement('div');
         div.className = 'paragraph';
         
-        // Check if this paragraph contains the special Elena marker
+        let isElenaParagraph = false;
         if (para.includes('[ELENA]')) {
+          isElenaParagraph = true;
           div.classList.add('elena-sentence');
-          // Remove the markers for display
           para = para.replace('[ELENA]', '').replace('[/ELENA]', '');
         }
         
-        div.textContent = para;
         div.setAttribute('data-original', para);
+        
+        // Convert to character spans immediately
+        if (isElenaParagraph) {
+          const beforeElena = 'And then, rising through the darkness like a bubble through still water, a single word, spoken with infinite tenderness: ';
+          const elenaWord = 'Elena';
+          const afterElena = '.';
+          
+          // Wrap in words to prevent breaking
+          const words = beforeElena.split(' ');
+          words.forEach((word, wi) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'word';
+            word.split('').forEach(c => {
+              const span = document.createElement('span');
+              span.className = 'char';
+              span.textContent = c;
+              wordSpan.appendChild(span);
+            });
+            div.appendChild(wordSpan);
+            // Add space after word (except last)
+            if (wi < words.length - 1) {
+              const space = document.createElement('span');
+              space.className = 'char';
+              space.textContent = ' ';
+              div.appendChild(space);
+            }
+          });
+          
+          const elenaSpan = document.createElement('span');
+          elenaSpan.className = 'elena-word proper-noun';
+          elenaSpan.textContent = elenaWord;
+          div.appendChild(elenaSpan);
+          
+          afterElena.split('').forEach(c => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = c;
+            div.appendChild(span);
+          });
+        } else {
+          // Process paragraph, handling [ITALIC] tags
+          const segments = parseItalics(para);
+          
+          segments.forEach(segment => {
+            // Tokenize into words and characters, marking proper nouns and emotional words
+            const tokens = tokenize(segment.text);
+            tokens.forEach(token => {
+              if (token.type === 'word') {
+                // Strip trailing punctuation for matching
+                const wordOnly = token.text.replace(/[.,;:!?\-—""''"\'"]+$/, '');
+                // Check if word matches a proper noun OR is part of a multi-word proper noun
+                const isProperNoun = properNouns.some(pn => {
+                  if (wordOnly === pn) return true;
+                  // Check if this word is part of a multi-word proper noun
+                  const pnWords = pn.split(' ');
+                  return pnWords.length > 1 && pnWords.includes(wordOnly);
+                });
+                const isEmotional = emotionalWords.some(ew => wordOnly.toLowerCase() === ew.toLowerCase());
+                
+                // Create word wrapper
+                const wordWrapper = document.createElement('span');
+                wordWrapper.className = 'word';
+                if (segment.italic) wordWrapper.classList.add('italic');
+                
+                if (isProperNoun) {
+                  const inner = document.createElement('span');
+                  inner.className = 'proper-noun';
+                  // Only wrap the word part, not punctuation
+                  wordOnly.split('').forEach(c => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = c;
+                    inner.appendChild(span);
+                  });
+                  wordWrapper.appendChild(inner);
+                  // Add trailing punctuation outside the proper-noun span but inside word
+                  const trailing = token.text.slice(wordOnly.length);
+                  trailing.split('').forEach(c => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = c;
+                    wordWrapper.appendChild(span);
+                  });
+                } else if (isEmotional) {
+                  const inner = document.createElement('span');
+                  inner.className = 'emotional';
+                  wordOnly.split('').forEach(c => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = c;
+                    inner.appendChild(span);
+                  });
+                  wordWrapper.appendChild(inner);
+                  // Add trailing punctuation
+                  const trailing = token.text.slice(wordOnly.length);
+                  trailing.split('').forEach(c => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = c;
+                    wordWrapper.appendChild(span);
+                  });
+                } else {
+                  token.text.split('').forEach(c => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = c;
+                    wordWrapper.appendChild(span);
+                  });
+                }
+                div.appendChild(wordWrapper);
+              } else {
+                // whitespace or standalone punctuation
+                token.text.split('').forEach(c => {
+                  const span = document.createElement('span');
+                  span.className = 'char';
+                  if (segment.italic) span.classList.add('italic');
+                  span.textContent = c;
+                  div.appendChild(span);
+                });
+              }
+            });
+          });
+        }
+        
         container.appendChild(div);
       });
     }
-
-    // Rest of your JavaScript remains the same
-    let readCount = 1, ready = false;
-    let stageExecuted = {2: false, 3: false, 4: false};
-    const properNouns = ['Chell','Lux Cortex Designs','Emma','David','Matthew Donovan','Sarah','Elena','Donovan'];
-    const emotionalWords = ['love','beautiful','happiness','memory','dreams','tears','familiar','loss','heart','smile','sad','profound','darkness','light','fragments','certainty','important','devotion','memories','intensity','feelings','adoration','desperate','grief','clarity','glow','pain','sensation','tenderness','intensity'];
-
-    function restartReading() { window.location.reload(); }
-
-    window.addEventListener('scroll', () => {
-      const pos = window.scrollY;
-      const bottom = document.documentElement.scrollHeight - window.innerHeight;
-      if (!ready && pos >= bottom - 5) {
-        if (readCount < 4) {
-          document.getElementById('continue-btn').style.display = 'block';
+    
+    // Tokenizer that keeps trailing punctuation with words
+    function tokenize(text) {
+      const tokens = [];
+      // Match: word + optional trailing punctuation, OR standalone whitespace/punctuation/quotes
+      const regex = /([a-zA-Z0-9']+[.,;:!?\-—""''\"\']*)|(\s+)|([.,;:!?\-—""''\"\']+)/g;
+      let match;
+      
+      while ((match = regex.exec(text)) !== null) {
+        if (match[1]) {
+          // Word (possibly with trailing punctuation)
+          tokens.push({type: 'word', text: match[1]});
+        } else if (match[2]) {
+          // Whitespace
+          tokens.push({type: 'space', text: match[2]});
+        } else if (match[3]) {
+          // Standalone punctuation (like opening quotes, em-dashes at start)
+          tokens.push({type: 'punct', text: match[3]});
         }
-        ready = true;
       }
-      if (ready && pos < 50 && !stageExecuted[readCount]) {
-        document.getElementById('continue-btn').style.display = 'none';
-        runStage();
-        ready = false;
+      
+      return tokens;
+    }
+    
+    // Parse [ITALIC]...[/ITALIC] tags into segments
+    function parseItalics(text) {
+      const segments = [];
+      const regex = /\[ITALIC\](.*?)\[\/ITALIC\]/g;
+      let lastIndex = 0;
+      let match;
+      
+      while ((match = regex.exec(text)) !== null) {
+        // Add non-italic text before this match
+        if (match.index > lastIndex) {
+          segments.push({ text: text.slice(lastIndex, match.index), italic: false });
+        }
+        // Add italic text
+        segments.push({ text: match[1], italic: true });
+        lastIndex = regex.lastIndex;
+      }
+      
+      // Add remaining non-italic text
+      if (lastIndex < text.length) {
+        segments.push({ text: text.slice(lastIndex), italic: false });
+      }
+      
+      return segments.length > 0 ? segments : [{ text: text, italic: false }];
+    }
+
+    // Scroll detection
+    window.addEventListener('scroll', () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPosition = window.scrollY;
+      if (scrollPosition >= scrollHeight - 50 && readCount < 4) {
+        ready = true;
+        document.getElementById('continue-btn').style.display = 'block';
       }
     });
 
-    function continueReading() {
-      readCount++;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    document.getElementById('continue-btn').addEventListener('click', () => {
+      document.getElementById('continue-btn').style.display = 'none';
+      if (ready && readCount < 4) {
+        readCount++;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Wait for scroll to complete before starting stage
+        setTimeout(runStage, 1200);
+        ready = false;
+      }
+    });
 
     function runStage() {
       if (readCount === 2 && !stageExecuted[2]) {
@@ -196,135 +451,132 @@ How fortunate, he thought, that he'd had the wisdom never to enhance a memory of
     }
 
     function redaction() {
-      document.querySelectorAll('.paragraph').forEach((p, i) => {
-        setTimeout(() => {
-          let html = p.getAttribute('data-original');
-          properNouns.forEach(n => {
-            html = html.replace(new RegExp(`\\b${n}\\b`, 'g'), `<span class="redacting">${n}</span>`);
+      document.querySelectorAll('.paragraph').forEach(p => {
+        const nouns = p.querySelectorAll('.proper-noun');
+        if (nouns.length === 0) return;
+        
+        const obs = new IntersectionObserver((entries, o) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !p.dataset.redacted) {
+              p.dataset.redacted = 'true';
+              nouns.forEach((el, i) => {
+                setTimeout(() => el.classList.add('redacted'), i * 250);
+              });
+            }
           });
-          p.innerHTML = html;
-          setTimeout(() => p.querySelectorAll('.redacting').forEach(el => el.classList.add('redacted')), 500);
-        }, i * 300);
+        }, { threshold: 0.3 });
+        obs.observe(p);
       });
     }
 
     function fadeWords() {
-      document.querySelectorAll('.paragraph').forEach((p, i) => {
-        setTimeout(() => {
-          let html = p.innerHTML;
-          emotionalWords.forEach(w => {
-            html = html.replace(new RegExp(`\\b${w}\\b`, 'gi'), `<span class="word-fade">${w}</span>`);
+      document.querySelectorAll('.paragraph').forEach(p => {
+        const words = p.querySelectorAll('.emotional');
+        if (words.length === 0) return;
+        
+        const obs = new IntersectionObserver((entries, o) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !p.dataset.faded) {
+              p.dataset.faded = 'true';
+              words.forEach((el, i) => {
+                setTimeout(() => el.classList.add('fading'), i * 150);
+              });
+            }
           });
-          p.innerHTML = html;
-          setTimeout(() => p.querySelectorAll('.word-fade').forEach(el => el.classList.add('fading')), 500);
-        }, i * 300);
+        }, { threshold: 0.3 });
+        obs.observe(p);
       });
     }
 
     function scatterByParagraph() {
-      clearPreviousAnimations();
+      // Add class to trigger CSS fade-out of redaction and blur
+      document.getElementById('story-content').classList.add('stage-scatter');
       
+      // Wait for fade-in to complete, then start scatter
       setTimeout(() => {
         document.querySelectorAll('.paragraph').forEach(p => {
-          const obs = new IntersectionObserver((entries, o) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                o.disconnect();
-                scatterParagraph(p);
-              }
-            });
-          }, { threshold: 0.6 });
-          obs.observe(p);
+          const rect = p.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+          
+          if (isVisible) {
+            p.dataset.scattered = 'true';
+            triggerScatter(p);
+          } else {
+            const obs = new IntersectionObserver((entries, o) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting && !p.dataset.scattered) {
+                  p.dataset.scattered = 'true';
+                  triggerScatter(p);
+                }
+              });
+            }, { threshold: 0.1 });
+            obs.observe(p);
+          }
         });
-      }, 2000);
+      }, 500);
     }
     
-    function clearPreviousAnimations() {
-      document.querySelectorAll('.redacting').forEach(el => {
-        el.classList.remove('redacted');
-        el.classList.add('clearing');
-      });
-      
-      document.querySelectorAll('.word-fade').forEach(el => {
-        el.classList.remove('fading');
-        el.classList.add('clearing');
-      });
-      
-      setTimeout(() => {
-        document.querySelectorAll('.paragraph').forEach(p => {
-          p.innerHTML = p.getAttribute('data-original');
-        });
-      }, 1500);
-    }
-
-    function scatterParagraph(p) {
-      const text = p.textContent;
+    function triggerScatter(p) {
       const isElenaParagraph = p.classList.contains('elena-sentence');
+      const chars = p.querySelectorAll('.char');
+      const paragraphs = document.querySelectorAll('.paragraph');
+      const isLastParagraph = p === paragraphs[paragraphs.length - 1];
       
-      const rect = p.getBoundingClientRect();
-      p.style.height = rect.height + 'px';
-      p.style.width = rect.width + 'px';
-      p.classList.add('scattering-active');
-      
-      p.innerHTML = '';
-      
-      if (isElenaParagraph) {
-        const beforeElena = 'And then, rising like bubbles through still water, a single word spoken with infinite tenderness: ';
-        const elenaWord = 'Elena';
-        const afterElena = '.';
-        
-        beforeElena.split('').forEach((c, i) => {
-          const span = document.createElement('span');
-          span.textContent = c;
-          span.className = 'scatter-char';
-          p.appendChild(span);
-          setTimeout(() => {
-            if (c !== ' ') {
-              const x = (Math.random() - 0.5) * 600;
-              const y = (Math.random() - 0.5) * 400;
-              span.style.transform = `translate(${x}px, ${y}px) rotate(${(Math.random() - 0.5) * 360}deg)`;
-              span.classList.add('scattering');
-            }
-          }, i * 40);
-        });
-        
-        const elenaSpan = document.createElement('span');
-        elenaSpan.textContent = elenaWord;
-        elenaSpan.className = 'elena-word';
-        p.appendChild(elenaSpan);
-        
-        const periodSpan = document.createElement('span');
-        periodSpan.textContent = afterElena;
-        periodSpan.className = 'scatter-char';
-        p.appendChild(periodSpan);
+      chars.forEach((span, i) => {
         setTimeout(() => {
-          periodSpan.style.transform = `translate(${(Math.random() - 0.5) * 400}px, ${(Math.random() - 0.5) * 300}px)`;
-          periodSpan.classList.add('scattering');
-        }, (beforeElena.length + 1) * 40);
-        
+          const c = span.textContent;
+          if (c !== ' ') {
+            const rand = Math.random();
+            const x = (Math.random() - 0.5) * 400;
+            const y = (Math.random() - 0.5) * 300;
+            const rotation = (Math.random() - 0.5) * 180;
+            
+            let targetOpacity;
+            let targetTransform;
+            let transitionClass;
+            
+            if (rand < 0.25) {
+              // 25% become faded residue
+              targetOpacity = 0.12 + Math.random() * 0.08;
+              targetTransform = `translate(${x * 0.3}px, ${y * 0.3}px) rotate(${rotation * 0.3}deg)`;
+              transitionClass = 'scatter-residue';
+            } else if (rand < 0.45) {
+              // 20% fade to very faint
+              targetOpacity = 0.04 + Math.random() * 0.06;
+              targetTransform = `translate(${x * 0.5}px, ${y * 0.5}px) rotate(${rotation * 0.5}deg)`;
+              transitionClass = 'scattering';
+            } else {
+              // 55% fully scatter and disappear
+              targetOpacity = 0;
+              targetTransform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+              transitionClass = 'scattering';
+            }
+            
+            span.classList.add(transitionClass);
+            span.style.transition = 'all 2.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            span.style.transform = targetTransform;
+            span.style.opacity = targetOpacity;
+          }
+        }, i * (isElenaParagraph ? 15 : 8));
+      });
+      
+      // Reveal Elena gracefully after surrounding text starts fading
+      if (isElenaParagraph) {
+        const elenaWord = p.querySelector('.elena-word');
+        if (elenaWord) {
+          setTimeout(() => {
+            elenaWord.classList.add('revealed');
+          }, chars.length * 8);
+        }
+      }
+      
+      if (isLastParagraph) {
         setTimeout(() => {
           document.getElementById('restart-btn').style.display = 'block';
-        }, beforeElena.length * 40 + 4000);
-        
-      } else {
-        text.split('').forEach((c, i) => {
-          const span = document.createElement('span');
-          span.textContent = c;
-          span.className = 'scatter-char';
-          p.appendChild(span);
-          setTimeout(() => {
-            if (c !== ' ') {
-              const x = (Math.random() - 0.5) * 600;
-              const y = (Math.random() - 0.5) * 400;
-              span.style.transform = `translate(${x}px, ${y}px) rotate(${(Math.random() - 0.5) * 360}deg)`;
-              span.classList.add('scattering');
-            }
-          }, i * 30);
-        });
+        }, chars.length * 8 + 2500);
       }
     }
 
-    // Initialize the story when the page loads
     window.addEventListener('DOMContentLoaded', initializeStory);
   </script>
 </body>
